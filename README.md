@@ -1,134 +1,123 @@
-# Gym Class Scheduling and Membership Management System
+## Gym Class Scheduling and Membership Management System (Backend)
+### Project Overview
+The Gym Class Scheduling and Membership Management System is a backend application designed to efficiently manage gym operations. It supports role-based access for Admins, Trainers, and Trainees, ensuring smooth class scheduling, trainer management, and membership handling.
 
-## Project Overview
+### Key Features:
+Role-based Authentication using JWT for secure access control.
+Admin Operations: Manage trainers, create schedules, assign trainers to classes.
+Trainer Operations: View assigned schedules.
+Trainee Operations: Register, manage profile, and book classes.
 
-The Gym Class Scheduling and Membership Management System is a web-based application designed to efficiently manage gym operations. The system includes role-based access for Admins, Trainers, and Trainees to handle tasks like class scheduling, trainer management, and class bookings.
+### Business Rules:
+Max 5 class schedules per day.
+Each class has a 2-hour duration.
+Max 10 trainees per schedule.
+Business Rules and Error Handling:
+Unauthorized access returns appropriate error messages.
+Validation ensures data correctness (e.g., email format, schedule limits).
+Proper responses for booking or scheduling violations.
 
-Admins can manage trainers and class schedules, trainers can view their assigned classes, and trainees can book available classes, all while adhering to business rules such as booking limits and schedule caps.
+### Technology Stack
+Programming Language: JavaScript (Node.js)
+Web Framework: Express.js
+Database: MongoDB (using Mongoose ODM)
+Authentication: JWT (JSON Web Tokens)
+Error Handling: Centralized middleware for consistent responses.
 
----
+### API Endpoints
 
-## Technology Stack
+### Authentication:
+POST /api/auth/login: Login a user and return a JWT.
+POST /api/auth/register: Register a trainee user.
 
-### Backend
-- **Programming Language**: JavaScript
-- **Web Framework**: Express.js
-- **Database**: MongoDB (Mongoose ODM)
-- **Authentication**: JSON Web Tokens (JWT)
+### Admin Operations:
+GET /api/trainers: Fetch all trainers.
+POST /api/trainers: Create a new trainer.
+PUT /api/trainers/:id: Update trainer details.
+DELETE /api/trainers/:id: Remove a trainer.
+POST /api/schedules: Create a new class schedule.
 
----
+### Trainer Operations:
+GET /api/schedules/trainer/:id: Fetch assigned schedules for a trainer.
 
-## Features
-
-### Authentication
-- Secure login and registration using JWT.
-- Role-based permissions for Admins, Trainers, and Trainees.
-
-### Admin Features
-- **Trainer Management**: Add, update, delete, and view trainers.
-- **Class Scheduling**: Schedule classes (max 5/day, 2-hour duration) and assign trainers.
-- Enforce class capacity of 10 trainees per schedule.
-
-### Trainer Features
-- View assigned classes with details (date, time, attendees).
-
-### Trainee Features
-- Create and manage profiles.
-- Book classes, subject to availability.
-
----
-
-## API Endpoints
-
-### Authentication
-- **POST** `/api/auth/login`: Authenticate user.
-- **POST** `/api/auth/register`: Register new trainees.
-
-### Trainer Management (Admin only)
-- **GET** `/api/trainers`: Fetch all trainers.
-- **POST** `/api/trainers`: Add a new trainer.
-- **PUT** `/api/trainers/:id`: Update a trainer.
-- **DELETE** `/api/trainers/:id`: Remove a trainer.
-
-### Class Scheduling (Admin only)
-- **GET** `/api/classes`: Fetch all schedules.
-- **POST** `/api/classes`: Add a new class schedule.
-- **GET** `/api/classes/:trainerId`: View schedules for a trainer.
-
-### Booking (Trainees only)
-- **POST** `/api/classes/:classId/book`: Book a class.
-
----
+### Trainee Operations:
+POST /api/bookings: Book a class schedule.
 
 ## Database Schema
+### User Model:
+javascript
+Copy code
+{
+  id: ObjectId,
+  fullName: String,
+  email: String,
+  password: String,
+  role: { type: String, enum: ["Admin", "Trainer", "Trainee"], required: true },
+}
+Trainer Model:
+javascript
+Copy code
+{
+  id: ObjectId,
+  fullName: String,
+  email: String,
+  specialization: String,
+}
 
-### User Collection
-```json
-{
-  "id": "string",
-  "email": "string",
-  "password": "string",
-  "role": "enum('admin', 'trainer', 'trainee')",
-  "name": "string"
-}
-### Class Collection
-json
+### Class Schedule Model:
+javascript
 Copy code
 {
-  "id": "string",
-  "trainerId": "string",
-  "date": "date",
-  "startTime": "time",
-  "endTime": "time",
-  "trainees": ["string"]
+  id: ObjectId,
+  date: Date,
+  startTime: String,
+  endTime: String,
+  trainerId: ObjectId,
+  maxTrainees: { type: Number, default: 10 },
+  enrolledTrainees: [ObjectId],
 }
-### Trainer Collection
-json
+
+
+
+### Running the Project Locally
+Clone the Repository:
+
+bash
 Copy code
-{
-  "id": "string",
-  "name": "string",
-  "email": "string"
-}
-Trainee Collection
-json
+git clone https://github.com/your-repo-url.git
+cd your-repo-folder
+Install Dependencies:
+
+bash
 Copy code
-{
-  "id": "string",
-  "name": "string",
-  "email": "string",
-  "classesBooked": ["string"]
-}
-### Business Rules
-Maximum of 5 class schedules per day.
-Each class schedule lasts for 2 hours.
-Maximum of 10 trainees per schedule.
-Role-based restrictions enforced using JWT.
-Error Handling
-Sample Responses
-Validation Error
-json
+npm install
+Configure Environment Variables: Create a .env file with the following:
+
+makefile
 Copy code
-{
-  "success": false,
-  "message": "Validation error occurred.",
-  "errorDetails": {
-    "field": "email",
-    "message": "Invalid email format."
-  }
-}
-### Unauthorized Access
-json
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/gym-management
+JWT_SECRET=your-secret-key
+Start the Server:
+
+bash
 Copy code
-{
-  "success": false,
-  "message": "Unauthorized access.",
-  "errorDetails": "You must be an admin to perform this action."
-}
-### Booking Limit Exceeded
-json
-Copy code
-{
-  "success": false,
-  "message": "Class schedule is full. Maximum 10 trainees allowed per schedule."
-}
+node server.js
+API is now accessible at: http://localhost:5000
+
+### Admin Credentials for Testing
+Email: admin@gym.com
+Password: admin123
+
+### Testing Instructions
+
+### Admin Features:
+Login with admin credentials to test trainer and schedule management.
+Test creating, updating, and deleting trainers.
+Test scheduling a class (ensure validation for max 5 schedules/day and 10 trainees/class).
+
+### Trainer Features:
+Login as a trainer to view assigned class schedules.
+Trainee Features:
+Register a trainee user.
+Login and book a class (test validation for max 10 trainees/class).
