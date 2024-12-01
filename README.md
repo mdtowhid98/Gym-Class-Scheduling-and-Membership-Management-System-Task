@@ -85,7 +85,7 @@ Copy code
 bash
 Copy code
 git clone https://github.com/https://github.com/mdtowhid98/Gym-Class-Scheduling-and-Membership-Management-System-Task
-cd your-repo-folder
+
 
 ### Install Dependencies:
 
