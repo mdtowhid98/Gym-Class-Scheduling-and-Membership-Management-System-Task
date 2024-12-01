@@ -1,0 +1,9 @@
+import { Router } from 'express';
+import { protect } from '../middlewares/authMiddleware';
+import { isTrainee } from '../middlewares/roleMiddleware';
+import {
+    createBooking,
+    getBookingsByTrainee,
+    getBookingsByClass,
+    cancelBooking
+} from '../controllers/bookingController';
