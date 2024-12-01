@@ -104,6 +104,6 @@ JWT_SECRET=your-secret-key
 
 bash
 Copy code
-node server.js
+node server.js\n
 API is now accessible at: http://localhost:5000
 
