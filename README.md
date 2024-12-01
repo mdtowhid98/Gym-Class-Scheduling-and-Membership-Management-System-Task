@@ -80,25 +80,27 @@ Copy code
 
 
 ### Running the Project Locally
-Clone the Repository:
+### Clone the Repository:
 
 bash
 Copy code
 git clone https://github.com/your-repo-url.git
 cd your-repo-folder
-Install Dependencies:
+
+### Install Dependencies:
 
 bash
 Copy code
 npm install
-Configure Environment Variables: Create a .env file with the following:
+### Configure Environment Variables: Create a .env file with the following:
 
 makefile
 Copy code
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/gym-management
 JWT_SECRET=your-secret-key
-Start the Server:
+
+###Start the Server:
 
 bash
 Copy code
