@@ -71,7 +71,7 @@ Admins can manage trainers and class schedules, trainers can view their assigned
   "role": "enum('admin', 'trainer', 'trainee')",
   "name": "string"
 }
-Class Collection
+### Class Collection
 json
 Copy code
 {
@@ -82,7 +82,7 @@ Copy code
   "endTime": "time",
   "trainees": ["string"]
 }
-Trainer Collection
+### Trainer Collection
 json
 Copy code
 {
@@ -99,7 +99,7 @@ Copy code
   "email": "string",
   "classesBooked": ["string"]
 }
-Business Rules
+### Business Rules
 Maximum of 5 class schedules per day.
 Each class schedule lasts for 2 hours.
 Maximum of 10 trainees per schedule.
@@ -117,7 +117,7 @@ Copy code
     "message": "Invalid email format."
   }
 }
-Unauthorized Access
+### Unauthorized Access
 json
 Copy code
 {
@@ -125,7 +125,7 @@ Copy code
   "message": "Unauthorized access.",
   "errorDetails": "You must be an admin to perform this action."
 }
-Booking Limit Exceeded
+### Booking Limit Exceeded
 json
 Copy code
 {
