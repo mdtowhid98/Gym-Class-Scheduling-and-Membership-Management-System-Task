@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "674a88ad9bc48e7e638fb319"
+  },
+  "name": "Jane Smith",
+  "experience": 8,
+  "classes": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674b02c2a040c7f82efa2388"
+  },
+  "name": "Jane Smith2",
+  "experience": 8,
+  "classes": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674bd697050100f8b3d6e46d"
+  },
+  "name": "Jane Smith3",
+  "experience": 8,
+  "classes": [],
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674bd70c050100f8b3d6e46f"
+  },
+  "name": "Jane Smith4",
+  "experience": 9,
+  "classes": [],
+  "__v": 0
+}]
