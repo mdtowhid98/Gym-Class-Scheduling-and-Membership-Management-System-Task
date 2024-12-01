@@ -100,26 +100,10 @@ PORT=5000
 MONGO_URI=mongodb://localhost:27017/gym-management
 JWT_SECRET=your-secret-key
 
-###Start the Server:
+### Start the Server:
 
 bash
 Copy code
 node server.js
 API is now accessible at: http://localhost:5000
 
-### Admin Credentials for Testing
-Email: admin@gym.com
-Password: admin123
-
-### Testing Instructions
-
-### Admin Features:
-Login with admin credentials to test trainer and schedule management.
-Test creating, updating, and deleting trainers.
-Test scheduling a class (ensure validation for max 5 schedules/day and 10 trainees/class).
-
-### Trainer Features:
-Login as a trainer to view assigned class schedules.
-Trainee Features:
-Register a trainee user.
-Login and book a class (test validation for max 10 trainees/class).
