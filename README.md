@@ -1,170 +1,110 @@
-# Backend Overview for Gym Class Scheduling and Membership Management System
-This project will implement a Gym Class Scheduling and Membership Management System with a backend using TypeScript, Express.js, MongoDB, and JWT for authentication. The backend will follow a modular structure (preferably using MVC architecture), making it scalable and maintainable.
+## Gym Class Scheduling and Membership Management System (Backend)
+### Project Overview
+The Gym Class Scheduling and Membership Management System is a backend application designed to efficiently manage gym operations. It supports role-based access for Admins, Trainers, and Trainees, ensuring smooth class scheduling, trainer management, and membership handling.
 
-## 1. Project Overview:
-The backend system is responsible for handling all the business logic for gym management, including managing trainers, trainees, class schedules, and bookings. This system will enforce several business rules such as limiting the number of classes per day, limiting the number of trainees per class, and ensuring authentication via JWT.
+### Key Features:
+Role-based Authentication using JWT for secure access control.
+Admin Operations: Manage trainers, create schedules, assign trainers to classes.
+Trainer Operations: View assigned schedules.
+Trainee Operations: Register, manage profile, and book classes.
 
-## 2. Technology Stack:
-Programming Language: TypeScript
+### Business Rules:
+Max 5 class schedules per day.
+Each class has a 2-hour duration.
+Max 10 trainees per schedule.
+Business Rules and Error Handling:
+Unauthorized access returns appropriate error messages.
+Validation ensures data correctness (e.g., email format, schedule limits).
+Proper responses for booking or scheduling violations.
+
+### Technology Stack
+Programming Language: JavaScript (Node.js)
 Web Framework: Express.js
-Database: MongoDB (NoSQL database)
-Authentication: JWT (JSON Web Tokens) for user authentication
-ORM: Mongoose (ODM for MongoDB)
-Error Handling: Custom error handling middleware
+Database: MongoDB (using Mongoose ODM)
+Authentication: JWT (JSON Web Tokens)
+Error Handling: Centralized middleware for consistent responses.
 
-## 3. Roles & Permissions:
-### Admin:
-Can manage trainers (add, update, delete).
-Can schedule classes, assign trainers to classes.
-Cannot manage trainee profiles.
-Must adhere to the class and schedule limitations.
+### API Endpoints
 
-### Trainer:
-Can view assigned classes.
-Cannot manage class schedules or trainees.
-
-### Trainee:
-Can create and manage their own profile.
-Can book classes (up to 10 trainees per class).
-
-## 4. Database Schema:
-Trainee Model:
-ts
-Copy code
-import { Schema, model } from "mongoose";
-
-const traineeSchema = new Schema({
-  fullName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  bookings: [{ type: Schema.Types.ObjectId, ref: "ClassSchedule" }],
-});
-
-export const Trainee = model("Trainee", traineeSchema);
-Trainer Model:
-ts
-Copy code
-import { Schema, model } from "mongoose";
-
-const trainerSchema = new Schema({
-  fullName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
-
-export const Trainer = model("Trainer", trainerSchema);
-ClassSchedule Model:
-ts
-Copy code
-import { Schema, model } from "mongoose";
-
-const classScheduleSchema = new Schema({
-  className: { type: String, required: true },
-  date: { type: Date, required: true },
-  duration: { type: Number, default: 2 }, // Duration in hours
-  trainer: { type: Schema.Types.ObjectId, ref: "Trainer", required: true },
-  trainees: [{ type: Schema.Types.ObjectId, ref: "Trainee" }],
-});
-
-export const ClassSchedule = model("ClassSchedule", classScheduleSchema);
-User Model (Admin, Trainer, Trainee)
-ts
-Copy code
-import { Schema, model } from "mongoose";
-
-const userSchema = new Schema({
-  role: { type: String, enum: ["admin", "trainer", "trainee"], required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
-
-export const User = model("User", userSchema);
-
-## 5. Relational Diagram:
-The relational diagram for the database schema could look like this:
-
-markdown
-Copy code
-┌────────────┐        ┌────────────┐        ┌────────────────────┐
-│   Trainer  │ 1     *│ ClassSchedule│ *   1│    Trainee         │
-└────────────┘        └────────────┘        └────────────────────┘
-      │                      │                   │
-      └──────────────────────┴───────────────────┘
-Trainer: Each trainer can have multiple class schedules, and each class schedule will be linked to one trainer.
-ClassSchedule: Each class schedule can accommodate multiple trainees, but a trainee can only book a class if there is availability.
-Trainee: Each trainee can have multiple class bookings, and each booking is tied to a specific class schedule.
-
-## 6. API Endpoints:
 ### Authentication:
-POST /api/auth/login: Login user (returns JWT token)
+POST /api/auth/login: Login a user and return a JWT.
+POST /api/auth/register: Register a trainee user.
 
-Request Body: { email: string, password: string }
-Response: { success: boolean, message: string, token: string }
-POST /api/auth/register: Register a new user (Trainee only)
+### Admin Operations:
+GET /api/trainers: Fetch all trainers.
+POST /api/trainers: Create a new trainer.
+PUT /api/trainers/:id: Update trainer details.
+DELETE /api/trainers/:id: Remove a trainer.
+POST /api/schedules: Create a new class schedule.
 
-Request Body: { fullName: string, email: string, password: string }
-Response: { success: boolean, message: string }
+### Trainer Operations:
+GET /api/schedules/trainer/:id: Fetch assigned schedules for a trainer.
 
-### Admin Routes:
-POST /api/admin/createTrainer: Create a new trainer
+### Trainee Operations:
+POST /api/bookings: Book a class schedule.
 
-Request Body: { fullName: string, email: string, password: string }
-Response: { success: boolean, message: string, data: Trainer }
-GET /api/admin/trainers: List all trainers
+## Database Schema
+### User Model:
+javascript
+Copy code
+{
+  id: ObjectId,
+  fullName: String,
+  email: String,
+  password: String,
+  role: { type: String, enum: ["Admin", "Trainer", "Trainee"], required: true },
+}
+Trainer Model:
+javascript
+Copy code
+{
+  id: ObjectId,
+  fullName: String,
+  email: String,
+  specialization: String,
+}
 
-Response: { success: boolean, data: Trainer[] }
-POST /api/admin/scheduleClass: Create a class schedule
-
-Request Body: { className: string, date: string, trainerId: string }
-Response: { success: boolean, message: string, data: ClassSchedule }
-
-### Trainer Routes:
-GET /api/trainer/schedules: Get trainer's assigned class schedules
-Response: { success: boolean, data: ClassSchedule[] }
-Trainee Routes:
-GET /api/trainee/bookings: Get all class bookings of the trainee
-
-Response: { success: boolean, data: ClassSchedule[] }
-POST /api/trainee/bookClass: Book a class for the trainee
-
-Request Body: { classScheduleId: string }
-Response: { success: boolean, message: string }
-
-### 7. Error Handling:
-To ensure the system operates smoothly, proper error handling must be in place:
-
-Unauthorized Access:
-
-Response: { success: false, message: "Unauthorized access", errorDetails: "You must be an admin to perform this action." }
-Validation Errors:
-
-Response: { success: false, message: "Validation error occurred.", errorDetails: { field: string, message: string } }
-Booking Limit Exceeded:
-
-Response: { success: false, message: "Class schedule is full. Maximum 10 trainees allowed per schedule." }
-Class Schedule Limit Exceeded:
-
-Response: { success: false, message: "You cannot schedule more than 5 classes per day." }
-
-### 8. Authentication and Authorization:
-JWT Token: Every request that needs to access protected routes (e.g., scheduling classes, managing trainers) must include a valid JWT token in the Authorization header.
-
-Role-based Access Control (RBAC): Based on the role of the user (admin, trainer, or trainee), access to various routes will be restricted:
-
-Admin: Full access to all routes.
-Trainer: Can view assigned classes, but cannot schedule or manage trainees.
-Trainee: Can only book and view their own classes.
+### Class Schedule Model:
+javascript
+Copy code
+{
+  id: ObjectId,
+  date: Date,
+  startTime: String,
+  endTime: String,
+  trainerId: ObjectId,
+  maxTrainees: { type: Number, default: 10 },
+  enrolledTrainees: [ObjectId],
+}
 
 
 
-### 9. Testing:
-Admin Role:
+### Running the Project Locally
+### Clone the Repository:
 
-Test the creation of trainers and class schedules.
-Ensure the class schedule limits and booking limits are enforced.
-Trainer Role:
+bash
+Copy code
+git clone https://github.com/https://github.com/mdtowhid98/Gym-Class-Scheduling-and-Membership-Management-System-Task
 
-Test that trainers can only view their own assigned classes.
-Trainee Role:
 
-Test the ability to book a class and check for booking limits.
+### Install Dependencies:
+
+bash
+Copy code
+npm install
+### Configure Environment Variables: Create a .env file with the following:
+
+makefile
+Copy code
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/gym-management
+JWT_SECRET=your-secret-key
+
+### Start the Server:
+
+bash
+Copy code
+node server.js
+
+API is now accessible at: http://localhost:5000
+
